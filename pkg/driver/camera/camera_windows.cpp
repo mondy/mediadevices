@@ -74,7 +74,7 @@ int listCamera(cameraList* list, const char** errstr)
     int i = 0;
     while (enumMon->Next(1, &moniker, nullptr) == S_OK)
     {
-      list->name[i] = getCameraName(moniker);
+      list->name[i++] = getCameraName(moniker);
       moniker->Release();
     }
   }
@@ -171,6 +171,11 @@ int listResolution(camera* cam, const char** errstr)
 
   moniker->BindToObject(0, 0, IID_IBaseFilter, (void**)&captureFilter);
   safeRelease(&moniker);
+
+  if (captureFilter == nullptr)
+  {
+    goto fail;
+  }
 
   src = getPin(captureFilter, PINDIR_OUTPUT);
   if (src == nullptr)
